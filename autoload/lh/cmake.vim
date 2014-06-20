@@ -54,7 +54,7 @@ let s:subcommands = {
 
 " Function: lh#cmake#_complete(ArgLead, CmdLine, CursorPos) {{{2
 let s:command = 'CM\%[ake]'
-function! lh#cmake#_complete(ArgLead, CmdLine, CursorPos)
+function! lh#cmake#_complete(ArgLead, CmdLine, CursorPos) abort
   let cmd = matchstr(a:CmdLine, s:command)
   let cmdpat = '^'.cmd
 
@@ -138,7 +138,7 @@ function! lh#cmake#_where_is_cache(...)
 endfunction
 
 " Function: lh#cmake#get_variables(pattern) {{{3
-function! lh#cmake#get_variables(pattern)
+function! lh#cmake#get_variables(pattern) abort
   let kv = copy(s:UpdateCache(lh#cmake#cachefile()))
   let pattern = substitute(a:pattern, '\*', '.*', 'g') " emulates wildcars
   let kv = filter(kv, 'v:key =~ pattern')
@@ -163,6 +163,9 @@ let s:__cache = {}
 
 " function: s:UpdateCache(filename) {{{3
 function! s:UpdateCache(filename) abort
+  if ! file_readable(a:filename)
+    throw "ccmake not run yet for this project -- ".a:filename. " does not exist."
+  endif
   if !has_key(s:__cache, a:filename)
     let s:__cache[a:filename] = {"date": 0}
   endif
