@@ -42,3 +42,5 @@ up-to-date can be automated thanks to
 [BuildToolsWrapper](http://code.google.com/p/lh-vim/wiki/BTW) and
 [local_vimrc](http://code.google.com/p/lh-vim/source/browse/misc/trunk/plugin/local_vimrc.vim).
 More on the subject latter.
+
+[![Project Stats](https://www.openhub.net/p/21020/widgets/project_thin_badge.gif)](https://www.openhub.net/p/21020)
