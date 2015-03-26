@@ -1,11 +1,10 @@
 "=============================================================================
-" $Id$
 " File:         addons/cmake/autoload/lh/cmake.vim                {{{1
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
-"		<URL:https://github.com/LucHermitte/lh-cmake>
+"               <URL:https://github.com/LucHermitte/lh-cmake>
 " Version:      001
 " Created:      11th Apr 2014
-" Last Update:  $Date$
+" Last Update:  26th Mar 2015
 "------------------------------------------------------------------------
 " Description:
 "       CMake plugin for Vim
@@ -42,6 +41,15 @@ endfunction
 
 "------------------------------------------------------------------------
 " ## Exported functions {{{1
+" # Variables {{{2
+" Function: lh#cmake#get_variables(pattern) {{{3
+function! lh#cmake#get_variables(pattern) abort
+  let kv = copy(s:UpdateCache(lh#cmake#cachefile()))
+  let pattern = substitute(a:pattern, '\*', '.*', 'g') " emulates wildcars
+  let kv = filter(kv, 'v:key =~ pattern')
+  return kv
+endfunction
+
 
 "------------------------------------------------------------------------
 " ## loaded on-the-fly functions {{{1
@@ -61,17 +69,17 @@ function! lh#cmake#_complete(ArgLead, CmdLine, CursorPos) abort
   let tmp = substitute(a:CmdLine, '\s*\S\+', 'Z', 'g')
   let pos = strlen(tmp)
   let lCmdLine = strlen(a:CmdLine)
-  let fromLast = strlen(a:ArgLead) + a:CursorPos - lCmdLine 
+  let fromLast = strlen(a:ArgLead) + a:CursorPos - lCmdLine
   " The argument to expand, but cut where the cursor is
   let ArgLead = strpart(a:ArgLead, 0, fromLast )
   if 0
     call confirm( "a:AL = ". a:ArgLead."\nAl  = ".ArgLead
-	  \ . "\nx=" . fromLast
-	  \ . "\ncut = ".strpart(a:CmdLine, a:CursorPos)
-	  \ . "\nCL = ". a:CmdLine."\nCP = ".a:CursorPos
-	  \ . "\ntmp = ".tmp."\npos = ".pos
-	  \ . "\ncmd = ".cmd
-	  \, '&Ok', 1)
+          \ . "\nx=" . fromLast
+          \ . "\ncut = ".strpart(a:CmdLine, a:CursorPos)
+          \ . "\nCL = ". a:CmdLine."\nCP = ".a:CursorPos
+          \ . "\ntmp = ".tmp."\npos = ".pos
+          \ . "\ncmd = ".cmd
+          \, '&Ok', 1)
   endif
 
   if cmd != 'CMake'
@@ -137,14 +145,6 @@ function! lh#cmake#_where_is_cache(...)
   echomsg lh#cmake#cachefile()
 endfunction
 
-" Function: lh#cmake#get_variables(pattern) {{{3
-function! lh#cmake#get_variables(pattern) abort
-  let kv = copy(s:UpdateCache(lh#cmake#cachefile()))
-  let pattern = substitute(a:pattern, '\*', '.*', 'g') " emulates wildcars
-  let kv = filter(kv, 'v:key =~ pattern')
-  return kv
-endfunction
-
 " Function: lh#cmake#_show() {{{3
 function! lh#cmake#_show(...)
   let kv = lh#cmake#get_variables(a:1)
@@ -171,7 +171,7 @@ function! s:UpdateCache(filename) abort
   endif
   let info = s:__cache[a:filename]
   let date = getftime(a:filename)
-  if info.date < date 
+  if info.date < date
     let info.kv = {}
     let content = readfile(a:filename)
     call filter(content, 'v:val =~ "^\\k\\+:\\k\\+\\s*="')
