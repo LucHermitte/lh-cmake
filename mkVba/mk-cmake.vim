@@ -25,6 +25,7 @@ endtry
 finish
 LICENSE
 README.md
+VimFlavor
 addon-info.json
 autoload/lh/cmake.vim
 plugin/lh-cmake.vim
