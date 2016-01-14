@@ -2,10 +2,10 @@
 " File:         mkVba/mk-cmake.vim                                {{{1
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://code.google.com/p/lh-vim/>
-" Version:      0.0.2
-let s:version = '0.0.2'
+" Version:      0.0.3
+let s:version = '0.0.3'
 " Created:      07th May 2014
-" Last Update:  18th Nov 2015
+" Last Update:  14th Jan 2016
 "------------------------------------------------------------------------
 " Description:
 "       Plugin to be sourced in order to build a vimball archive for lh-cmake
@@ -28,4 +28,6 @@ README.md
 VimFlavor
 addon-info.json
 autoload/lh/cmake.vim
+ftplugin/cmake_dictionary.vim
+ftplugin/word.list
 plugin/lh-cmake.vim

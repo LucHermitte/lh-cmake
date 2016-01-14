@@ -22,6 +22,10 @@ It also provides a `:CMake` command that takes different parameters:
 * `:CMake show pattern` displays the cached CMake variables that have a name
   that matches the REGEX pattern
 
+### CMake dictionary
+
+lh-cmake provides (an extremly incomplete) dictionary of CMake keywords,
+variables, ... that can be used to help Vim complete in CMake files.
 
 ## Installation
 
