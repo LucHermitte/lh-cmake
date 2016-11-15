@@ -2,9 +2,10 @@
 " File:         addons/cmake/autoload/lh/cmake.vim                {{{1
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "               <URL:https://github.com/LucHermitte/lh-cmake>
-" Version:      001
+" Version:      003
+let s:k_version = 003
 " Created:      11th Apr 2014
-" Last Update:  26th Mar 2015
+" Last Update:  15th Nov 2016
 "------------------------------------------------------------------------
 " Description:
 "       CMake plugin for Vim
@@ -16,7 +17,6 @@ set cpo&vim
 "------------------------------------------------------------------------
 " ## Misc Functions     {{{1
 " # Version {{{2
-let s:k_version = 1
 function! lh#cmake#version()
   return s:k_version
 endfunction
@@ -89,14 +89,11 @@ function! lh#cmake#_complete(ArgLead, CmdLine, CursorPos) abort
   if     2 == pos
     return keys(s:subcommands)
   elseif 3 == pos
-    if !exists('b:BTW_compilation_dir')
-      throw "No path to CMakeCache.txt configured from this buffer"
-    endif
+    let cachefile = lh#cmake#cachefile()
 
     let subcommand = matchstr(a:CmdLine, '^'.s:command.'\s\+\zs\S\+\ze')
     " call confirm("subcommand: ".subcommand, '&Ok', 1)
     if subcommand == 'show'
-      let cachefile = b:BTW_compilation_dir.'/CMakeCache.txt'
       let kv = s:UpdateCache(cachefile)
       let k = keys(kv)
       let ArgLead = substitute(ArgLead, '\*', '.*', 'g') " emulate wildcars
@@ -113,10 +110,7 @@ function! lh#cmake#_command(...) abort
     call lh#common#error_msg(':CMake: missing argument, try '.string(keys(s:subcommands)))
     return
   endif
-  if !exists('b:BTW_compilation_dir')
-    throw "No path to CMakeCache.txt configured from this buffer"
-  endif
-  let cachefile = b:BTW_compilation_dir.'/CMakeCache.txt'
+  let cachefile = lh#cmake#cachefile()
 
   let subcommand = a:1
   if !has_key(s:subcommands, subcommand)
@@ -131,7 +125,12 @@ endfunction
 
 " Function: lh#cmake#cachefile() {{{3
 function! lh#cmake#cachefile()
-  let cachefile = b:BTW_compilation_dir.'/CMakeCache.txt'
+  " TODO: use BTW getter!
+  let compilation_dir = lh#btw#compilation_dir()
+  if lh#option#is_unset(compilation_dir)
+    throw "No path to CMakeCache.txt configured from this buffer"
+  endif
+  let cachefile = compilation_dir.'/CMakeCache.txt'
   return cachefile
 endfunction
 
@@ -184,6 +183,7 @@ function! s:UpdateCache(filename) abort
 
   return info.kv
 endfunction
+" }}}1
 "------------------------------------------------------------------------
 let &cpo=s:cpo_save
 "=============================================================================
