@@ -8,12 +8,14 @@ This plugin provides a few utilities for working on [CMake](http://www.cmake.org
 ### Obtain current project configuration as it's known by CMake
 
 This plugin can analyze the current `CMakeCache.txt` (see
-[`b:BTW_Compilation_dir`](#configuration)) and report miscellaneous
+[`lh#btw#compilation_dir()`](#configuration)) and report miscellaneous
 information:
 
 * Where the `CMakeCache.txt` file is thanks to `lh#cmake#_where_is_cache()`
 * The dictionary (`:h Dict`) of variables matching a REGEX pattern with
   `lh#cmake#get_variables(*pattern*)`
+* The list of project specific includes (it lists the content of all CMake
+  `XXX_INCLUDE` variables)
 
 It also provides a `:CMake` command that takes different parameters:
 
@@ -32,7 +34,7 @@ variables, ... that can be used to help Vim complete in CMake files.
 This plugin will best installed with
 [Vim-Addon-Manager](https://github.com/MarcWeber/vim-addon-manager) as it will
 also install
-dependencies ( [lh-vim-lib](http://code.google.com/p/lh-vim/wiki/lhVimLib)).
+dependencies ([lh-vim-lib](http://code.google.com/p/lh-vim/wiki/lhVimLib)).
 
 By the mean time, you can clone this repositoriy and lh-vim-lib and install
 them manually or with your prefered plugin manager.
@@ -40,7 +42,7 @@ them manually or with your prefered plugin manager.
 
 ## Configuration
 
-This plugin needs the variable `b:BTW_Compilation_dir` to be set to the
+This plugin needs the variable `(bpg):BTW.compilation_dir` to be set to the
 directory where `ccmake` has been executed. Having this variable set and
 up-to-date can be automated thanks to
 [BuildToolsWrapper](http://code.google.com/p/lh-vim/wiki/BTW) and

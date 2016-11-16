@@ -5,15 +5,20 @@
 " Version:      003
 let s:k_version = 003
 " Created:      11th Apr 2014
-" Last Update:  15th Nov 2016
+" Last Update:  16th Nov 2016
 "------------------------------------------------------------------------
 " Description:
 "       CMake plugin for Vim
+"
+" Design elements:
+" - Contents of CMakeCache.txt are cached in memory. The file is read only when
+"   unknown, or when it has changed since last time.
 " }}}1
 "=============================================================================
 
 let s:cpo_save=&cpo
 set cpo&vim
+
 "------------------------------------------------------------------------
 " ## Misc Functions     {{{1
 " # Version {{{2
@@ -22,22 +27,25 @@ function! lh#cmake#version()
 endfunction
 
 " # Debug   {{{2
-let s:verbose = 0
+let s:verbose = get(s:, 'verbose', 0)
 function! lh#cmake#verbose(...)
   if a:0 > 0 | let s:verbose = a:1 | endif
   return s:verbose
 endfunction
 
-function! s:Verbose(expr)
+function! s:Log(expr, ...)
+  call call('lh#log#this',[a:expr]+a:000)
+endfunction
+
+function! s:Verbose(expr, ...)
   if s:verbose
-    echomsg a:expr
+    call call('s:Log',[a:expr]+a:000)
   endif
 endfunction
 
-function! lh#cmake#debug(expr)
+function! lh#cmake#debug(expr) abort
   return eval(a:expr)
 endfunction
-
 
 "------------------------------------------------------------------------
 " ## Exported functions {{{1
@@ -50,9 +58,23 @@ function! lh#cmake#get_variables(pattern) abort
   return kv
 endfunction
 
+" Function: lh#cmake#get_includes() {{{3
+" Fetch project specific includes
+" How: Use the following trick: we assume that any included directory has a
+" matching "XXX_INCLUDE" variable associated in CMake configuration.
+" This is very impecfect, but good enough for now.
+" TODO: find all the actual include directories used (with
+" `(target_)include_directories()`). Hints: use the new CMake 3.7 server mode,
+" or analyse the json compilation database
+function! lh#cmake#get_includes() abort
+  let included_paths = lh#cmake#get_variables('INCLUDE')
+  call filter(included_paths, 'v:val.value!~"NOTFOUND"')
+  let cmake_paths = values(map(copy(included_paths), 'v:val.value'))
+  return cmake_paths
+endfunction
 
 "------------------------------------------------------------------------
-" ## loaded on-the-fly functions {{{1
+" ## Loaded on-the-fly functions {{{1
 " Subcommands list {{{2
 let s:subcommands = {
       \ 'show': function('lh#cmake#_show'),
@@ -125,7 +147,7 @@ endfunction
 
 " Function: lh#cmake#cachefile() {{{3
 function! lh#cmake#cachefile()
-  " TODO: use BTW getter!
+  " TODO: fix this circular dependency to BTW
   let compilation_dir = lh#btw#compilation_dir()
   if lh#option#is_unset(compilation_dir)
     throw "No path to CMakeCache.txt configured from this buffer"
