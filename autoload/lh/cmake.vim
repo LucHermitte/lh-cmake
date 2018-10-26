@@ -5,7 +5,7 @@
 " Version:      003
 let s:k_version = 003
 " Created:      11th Apr 2014
-" Last Update:  16th Nov 2016
+" Last Update:  26th Oct 2018
 "------------------------------------------------------------------------
 " Description:
 "       CMake plugin for Vim
@@ -185,7 +185,9 @@ let s:__cache = {}
 " function: s:UpdateCache(filename) {{{3
 function! s:UpdateCache(filename) abort
   if ! file_readable(a:filename)
-    throw "ccmake not run yet for this project -- ".a:filename. " does not exist."
+    if ! lh#btw#cmake#bootstrap()
+      throw "ccmake not run yet for this project -- ".a:filename. " does not exist. Impossible to run ccmake."
+    endif
   endif
   if !has_key(s:__cache, a:filename)
     let s:__cache[a:filename] = {"date": 0}
