@@ -2,10 +2,10 @@
 " File:         ftplugin/cmake_dictionary.vim                     {{{1
 " Author:       Luc Hermitte <EMAIL:hermitte {at} gmail {dot} com>
 "		<URL:http://github.com/LucHermitte/lh-cmake>
-" Version:      0.0.2.
-let s:k_version = '002'
+" Version:      0.0.3.
+let s:k_version = '003'
 " Created:      14th Jan 2016
-" Last Update:  14th Jan 2016
+" Last Update:  16th Jan 2019
 "------------------------------------------------------------------------
 " Description:
 "       CMake Dictionary
@@ -20,14 +20,16 @@ let s:k_version = '002'
 
 " Buffer-local Definitions {{{1
 " Avoid local reinclusion {{{2
+let s:cpo_save=&cpo
+set cpo&vim
+
 if &cp || (exists("b:loaded_ftplug_cmake_dictionary")
       \ && (b:loaded_ftplug_cmake_dictionary >= s:k_version)
       \ && !exists('g:force_reload_ftplug_cmake_dictionary'))
+  let &cpo=s:cpo_save
   finish
 endif
 let b:loaded_ftplug_cmake_dictionary = s:k_version
-let s:cpo_save=&cpo
-set cpo&vim
 " Avoid local reinclusion }}}2
 
 "------------------------------------------------------------------------
@@ -40,25 +42,7 @@ if filereadable(s:dictionary)
 endif
 setlocal complete-=i
 
-"=============================================================================
-" Global Definitions {{{1
-" Avoid global reinclusion {{{2
-if &cp || (exists("g:loaded_ftplug_cmake_dictionary")
-      \ && (g:loaded_ftplug_cmake_dictionary >= s:k_version)
-      \ && !exists('g:force_reload_ftplug_cmake_dictionary'))
-  let &cpo=s:cpo_save
-  finish
-endif
-let g:loaded_ftplug_cmake_dictionary = s:k_version
-" Avoid global reinclusion }}}2
-"------------------------------------------------------------------------
-" Functions {{{2
-" Note: most filetype-global functions are best placed into
-" autoload/«your-initials»/cmake/«cmake_dictionary».vim
-" Keep here only the functions are are required when the ftplugin is
-" loaded, like functions that help building a vim-menu for this
-" ftplugin.
-" Functions }}}2
+" }}}1
 "------------------------------------------------------------------------
 let &cpo=s:cpo_save
 "=============================================================================
