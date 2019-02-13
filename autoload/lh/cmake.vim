@@ -5,7 +5,7 @@
 " Version:      003
 let s:k_version = 003
 " Created:      11th Apr 2014
-" Last Update:  26th Oct 2018
+" Last Update:  13th Feb 2019
 "------------------------------------------------------------------------
 " Description:
 "       CMake plugin for Vim
@@ -149,7 +149,7 @@ endfunction
 function! lh#cmake#cachefile()
   " TODO: fix this circular dependency to BTW
   let compilation_dir = lh#btw#compilation_dir()
-  if lh#option#is_unset(compilation_dir)
+  if lh#option#is_unset(compilation_dir) || compilation_dir == '.'
     throw "No path to CMakeCache.txt configured from this buffer"
   endif
   let cachefile = compilation_dir.'/CMakeCache.txt'
