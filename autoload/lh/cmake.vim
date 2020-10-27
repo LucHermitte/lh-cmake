@@ -5,7 +5,7 @@
 " Version:      003
 let s:k_version = 003
 " Created:      11th Apr 2014
-" Last Update:  13th Feb 2019
+" Last Update:  27th Oct 2020
 "------------------------------------------------------------------------
 " Description:
 "       CMake plugin for Vim
@@ -146,7 +146,7 @@ endfunction
 " ## Internal functions {{{1
 
 " Function: lh#cmake#cachefile() {{{3
-function! lh#cmake#cachefile()
+function! lh#cmake#cachefile() abort
   " TODO: fix this circular dependency to BTW
   let compilation_dir = lh#btw#compilation_dir()
   if lh#option#is_unset(compilation_dir) || compilation_dir == '.'
@@ -157,17 +157,17 @@ function! lh#cmake#cachefile()
 endfunction
 
 " Function: lh#cmake#_open_cache() {{{3
-function! lh#cmake#_open_cache(...)
+function! lh#cmake#_open_cache(...) abort
   call lh#buffer#jump(lh#cmake#cachefile(), 'sp')
 endfunction
 
 " Function: lh#cmake#_where_is_cache() {{{3
-function! lh#cmake#_where_is_cache(...)
+function! lh#cmake#_where_is_cache(...) abort
   echomsg lh#cmake#cachefile()
 endfunction
 
 " Function: lh#cmake#_show() {{{3
-function! lh#cmake#_show(...)
+function! lh#cmake#_show(...) abort
   let kv = lh#cmake#get_variables(a:1)
 
   let lengths = map(keys(kv), 'strlen(v:val)')
